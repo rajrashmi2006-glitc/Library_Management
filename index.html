@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Library Management System</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: url("/static/image.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* slide layout */
+.slide{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:30px;
+}
+
+/* white card */
+.card{
+    background: rgba(255,255,255,0.95);
+    width:650px;
+    padding:60px;
+    border-radius:10px;
+    box-shadow:0 25px 35px rgba(0,0,0,0.3);
+    margin-bottom:20px;
+}
+
+/* inputs */
+input, button{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#4CAF50;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#43a047;
+}
+
+h1{
+    text-align:center;
+    color:#2c3e50;
+}
+
+h3{
+    text-align:center;
+    color:#34495e;
+}
+
+.hidden{
+    display:none;
+}
+
+.center{
+    text-align:center;
+}
+
+/* accordion */
+details{
+    margin-bottom:15px;
+    border-radius:6px;
+    overflow:hidden;
+}
+
+summary{
+    background:#2c3e50;
+    color:white;
+    padding:12px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+details[open] summary{
+    background:#1abc9c;
+}
+
+.step-box{
+    padding:15px;
+    background:#f9f9f9;
+}
+/* Container */
+.table-wrapper {
+    width: 95%;
+    margin: auto;
+    overflow-x: hidden;
+}
+
+/* Table */
+.common-table {
+    width: 95%;
+    border-collapse: collapse;
+    font-size: 11px;          /* 🔽 REDUCED */
+    line-height: 1.3;         /* 🔽 REDUCED */
+}
+
+/* Header */
+.common-table th {
+    padding: 8px 12px;        /* 🔽 REDUCED HEIGHT */
+    background-color: #1f3a5f;
+    color: white;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Data cells */
+.common-table td {
+    padding: 5px 10px;        /* 🔽 REDUCED HEIGHT */
+    background-color: #f8f9fa;
+    white-space: nowrap;
+}
+
+/* Row divider */
+.common-table tr {
+    border-bottom: 1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SLIDE 1 (UNCHANGED) ================= -->
+<div class="slide" id="slide1">
+    <div class="card center">
+        <h1>Library Management System</h1>
+
+        <h3>Book Search</h3>
+        <form action="/search" method="post">
+            <input type="text" name="book" placeholder="Enter Book Name" required>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if result %}
+<div style="margin-top:15px; padding:10px; border-radius:5px;
+            background:#f1f8e9; color:#2e7d32;">
+    <b>Status:</b> {{ result }} <br>
+
+    {% if rack %}
+        <b>Rack:</b> {{ rack }} <br>
+        <b>Row:</b> {{ row }}
+    {% endif %}
+</div>
+{% endif %}
+
+        <h3>E-Book Search</h3>
+        <a href="https://gemini.google.com" target="_blank">
+            Open Google Gemini
+        </a><br><br>
+
+        <button onclick="openSlide2()">NEXT ➡</button>
+    </div>
+</div>
+
+<!-- ================= SLIDE 2 (ORDER AS REQUESTED) ================= -->
+<div class="slide hidden" id="slide2">
+<div class="card">
+
+<h1>Library Management System</h1>
+
+<!-- STEP 1: STUDENT REGISTRATION -->
+ <details>
+<summary>▶️ Step 1: STUDENT REGISTRATION</summary>
+<!-- ✅ SUCCESS MESSAGE -->
+
+
+
+<form action="/register" method="POST">
+  <h3>Step 1: Student Registration</h3>
+  
+  <input type="text" name="name" placeholder="Student Name" required>
+  <input type="text" name="usn" placeholder="USN" required>
+  <input type="text" name="branch" placeholder="Branch" required>
+  <input type="number" name="semester" placeholder="Semester" required>
+  <input type="text" name="phone" placeholder="Phone Number" required>
+  <input type="email" name="email" placeholder="Email" required>
+
+  <button type="submit">Register Student</button>
+</form>
+{% if student_msg %}
+<p style="color:green">{{ student_msg }}</p>
+{% endif %}
+ </details>
+
+
+<!-- STEP 2: ISSUE BOOK -->
+<details>
+<summary>▶️ Step 2: Issue Book</summary>
+<div class="step-box">
+
+    <!-- ✅ MESSAGE SHOULD BE HERE -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p style="color:green; font-weight:bold;">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/issue" method="post">
+        <input name="book_id" placeholder="Book ID" required>
+        <input name="book_name" placeholder="Book Name" required>
+        <input name="publisher" placeholder="Publisher" required>
+        <input name="student_usn" placeholder="Student USN" required>
+        <input type="email" name="student_email" placeholder="Student Email" required>
+        <input type="date" name="issue_date" required>
+        <input type="date" name="return_date" required>
+        <button type="submit">Issue Book</button>
+    </form>
+    
+
+</div>
+</details>
+<!-- STEP 3: ADD BOOK -->
+<details>
+<summary>▶️ Step 3: Add Book</summary>
+<div class="step-box">
+
+<form action="/add_book" method="post">
+    <input type="number" name="book_id" placeholder="Book ID" required>
+    <input type="text" name="book_name" placeholder="Book Name" required>
+    <input type="text" name="publisher" placeholder="Publisher" required>
+    <button type="submit">Add Book</button>
+</form>
+
+{% if add_msg %}
+<p style="color:green; font-weight:bold; text-align:center;">
+    {{ add_msg }}
+</p>
+{% endif %}
+
+</div>
+</details>
+
+<!-- STEP 4: RETURN BOOK -->
+<details>
+<summary>▶️ Step 4: Return Book</summary>
+<div class="step-box">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <p style="color:green; font-weight:bold;">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form action="/return" method="post">
+    <input name="book_id" placeholder="Book ID" required>
+    <input name="book_name" placeholder="Book Name" required>
+    <input name="student_usn" placeholder="Student USN" required>
+    <button type="submit">Return Book</button>
+</form>
+
+</div>
+</details>
+<div class="table-box">
+<h3>👨‍🎓 Registered Students</h3>
+
+<table class="common-table">
+    <tr>
+        <th>USN</th>
+        <th>Name</th>
+        <th>Branch</th>
+        <th>Semester</th>
+        <th>Phone</th>
+        <th>Email</th>
+    </tr>
+
+    {% for s in students %}
+    <tr>
+        <td>{{ s.usn }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.branch }}</td>
+        <td>{{ s.semester }}</td>
+        <td>{{ s.phone }}</td>
+        <td>{{ s.email }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<hr>
+
+<h3>📚 Issued Books (Total: {{ issued_books|length }})</h3>
+
+<table class="common-table">
+<tr>
+    <th>Book ID</th>
+    <th>Book Name</th>
+    <th>Publisher</th>
+    <th>Student USN</th>
+    <th>Issue Date</th>
+    <th>Return Date</th>
+    <th>Status</th>
+</tr>
+
+{% for b in issued_books %}
+<tr>
+    <td>{{ b.book_id }}</td>
+    <td>{{ b.book_name }}</td>
+    <td>{{ b.publisher }}</td>
+    <td>{{ b.student_usn }}</td>
+    <td>{{ b.issue_date }}</td>
+    <td>{{ b.return_date or '-' }}</td>
+    <td>
+        {% if b.returned == 1 %}
+            <span style="color:green;font-weight:bold;">✅ Returned</span>
+        {% else %}
+            <span style="color:red;font-weight:bold;">❌ Not Returned</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<script>
+function openSlide2(){
+    document.getElementById("slide1").classList.add("hidden");
+    document.getElementById("slide2").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
